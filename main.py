@@ -28,21 +28,12 @@ our_first_lock = Lock(
 def worker(our_lock, index):
     for r in range(3):
         time.sleep(random.random())
-        logger.info(f"in worker {index}")
+        logger.info(f"waiting on acquire worker {index}")
         our_lock.acquire()
-        time.sleep(random.random())
         logger.info(f"locked worker {index}")
+        time.sleep(random.random())
         our_lock.release()
         logger.info(f"released worker {index}")
-        
-
-lock_attempt = our_first_lock.acquire()
-# try to aquire the lock
-if lock_attempt:
-    print("we got our lock")
-    our_first_lock.release()
-else:
-    print("no lock aqcquired need to wait")
 
 x = []
 for i in range(5):
@@ -51,8 +42,5 @@ for i in range(5):
 for i in range(5):
     time.sleep(random.random())
     x[i].start()
-
-#for i in range(5):
-#    x[i].join()
 
 
