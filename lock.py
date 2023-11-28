@@ -8,8 +8,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-
 class Client():
     def __init__(self, boto3_client, lock_table_name, owner_name):
         self.boto3_client = boto3_client

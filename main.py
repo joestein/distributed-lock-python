@@ -2,6 +2,13 @@ from lock import Lock, Client
 import boto3
 import threading
 import time
+import random
+import logging
+import sys
+
+logger = logging.getLogger(__name__)
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 client = Client(boto3_client=boto3.resource("dynamodb", region_name="us-east-2"), lock_table_name="distributed-locks", owner_name="testing_localhost")
 
@@ -20,11 +27,13 @@ our_first_lock = Lock(
 
 def worker(our_lock, index):
     for r in range(3):
-        time.sleep(0.7)
-        print(f"in worker {index}")
+        time.sleep(random.random())
+        logger.info(f"in worker {index}")
         our_lock.acquire()
-        time.sleep(0.7)
+        time.sleep(random.random())
+        logger.info(f"locked worker {index}")
         our_lock.release()
+        logger.info(f"released worker {index}")
         
 
 lock_attempt = our_first_lock.acquire()
@@ -40,7 +49,7 @@ for i in range(5):
     x.append(threading.Thread(target=worker, args=(our_first_lock, i,)))
 
 for i in range(5):
-    time.sleep(0.2)
+    time.sleep(random.random())
     x[i].start()
 
 #for i in range(5):
